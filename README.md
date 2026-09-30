@@ -1,68 +1,284 @@
-# Smart Waste Management System — Report. Collect. Clean.
+# CleanSync
+mart Waste Management System
+📌 Project Overview
 
-Node.js + Express + SQLite backend with a vanilla JS frontend. Citizen, Admin and Collector log in from
-different devices/browsers and share the same live data (auto-refresh every 8 seconds).
+The Smart Waste Management System is a web-based application designed to improve the process of waste reporting, prioritization, collection, and verification.
 
-## Setup
-```
-npm install
-npm start
-```
-Open http://localhost:3000  (needs Node.js 18+; SQLite file `waste.db` is created automatically)
+The system connects different users such as Citizens, Administrators, and Waste Collectors through a centralized platform. Citizens can report waste-related issues, administrators can monitor and prioritize reports, and collectors can view assigned tasks and update their collection status.
 
-## Folder structure
-```
-server.js        Express API + SQLite schema (users, sessions, complaints, assignments, pickup_requests, notifications)
-package.json
-public/
-  index.html
-  css/style.css  light/dark theme, responsive layout
-  js/app.js      views, smart rules, API calls
-```
+The main purpose of the project is to make waste management more organized, transparent, responsive, and user-friendly.
 
-## How the roles connect
-1. Create one Admin, one Collector and one Citizen account (Login page -> choose role -> Create <Role> Account).
-2. Citizen reports waste / requests pickup  -> Admin sees it instantly in the Priority Queue.
-3. Admin assigns a Collector               -> Collector sees the task, Citizen gets a notification.
-4. Collector marks In Progress + uploads after-cleanup photo -> Citizen gets "please verify".
-5. Citizen verifies (YES = Resolved, NO = Reopened)          -> Admin is notified, stats update.
+🎯 Problem Statement
 
-## API summary
-POST /api/register, /api/login, /api/logout | GET /api/state, /api/public
-POST /api/complaints | PATCH /api/complaints/:id {action: assign|status|done|verify}
-POST /api/pickups, /api/pickups/:id/advance, /api/notifications/read
+Traditional waste management systems often depend on manual reporting and communication. This can create several problems:
 
-## Access from other devices
-Run the server on one laptop and open http://<laptop-ip>:3000 from other devices on the same Wi-Fi.
-Note: browsers only allow camera/location on https or localhost, so use Upload / type the area on those devices,
-or expose the server over https (e.g. with ngrok).
+Waste complaints may not reach the responsible department quickly.
+There may be no proper system for tracking complaints.
+Waste collection tasks may not be properly assigned.
+High-priority waste locations may not receive immediate attention.
+Citizens may not know the current status of their complaints.
+Administrators may find it difficult to monitor all reported issues.
 
-## Notes
-- Passwords are salted + hashed (scrypt); logins use random session tokens.
-- Anyone can create an Admin account (fine for a college demo; add an admin invite code for real use).
-- Waste detection is a simulation based on the selected waste type (`classify()` in app.js).
-- Location uses OpenStreetMap Nominatim; atmosphere uses Open-Meteo; charts use Chart.js CDN (internet needed).
+The Smart Waste Management System provides a digital platform to address these problems.
 
-## Open on your phone (responsive)
-1. Laptop and phone must be on the same Wi-Fi.
-2. Run `npm start`. The console prints `Phone (same Wi-Fi): http://192.168.x.x:3000` - open that address in the phone browser.
-3. If it does not open, allow Node.js through the laptop firewall (Windows: "Allow an app through Windows Firewall").
-4. On phones the sidebar becomes a bottom navigation bar. Over plain http the live camera/location are blocked by the browser:
-   "Open Camera" then opens the phone camera directly, and you can type the area. For full camera/location use an https link (deploy on Render, or ngrok).
+💡 Proposed Solution
 
-## If Citizen and Admin do not see each other
-- Everyone must open the SAME address printed by `npm start` (e.g. http://localhost:3000 or http://192.168.x.x:3000).
-  Do NOT open index.html by double-click or via VS Code Live Server unless you set the server address (login page -> "change").
-- The login page shows `🟢 Server: ...`. If it shows 🔴, the browser cannot reach the backend.
-- Top-right pill shows `🟢 Live` when real-time sync is working.
-- Updates arrive instantly (server push) with a 4-second polling fallback.
-- To test roles on ONE computer, use two different tabs/windows (each tab keeps its own login).
+Our system provides a centralized web application where:
 
-## Accounts
-Accounts are stored in SQLite (`waste.db`). Register once, then log in with the same email (or ID) and password from any device.
-Login no longer needs the role - the app opens the dashboard of the account's role. Sessions stay in the tab until Logout.
-To keep data on a hosting service use a persistent disk and set `DB_PATH` (e.g. /data/waste.db).
+Citizen → Reports Waste → Admin Reviews → Priority Assigned → Collector Assigned → Waste Collected → Status Updated → Citizen Gets Updated
 
-## Single-file frontend
-`smart-waste-app.html` is the whole frontend in one responsive file. Open it on any device, tap "change" on the login page
-(or answer the prompt) and enter your server address, e.g. http://192.168.1.5:3000
+This workflow creates better coordination between citizens, administrators, and waste collectors.
+
+🎯 Objectives
+
+The major objectives of the project are:
+
+To provide an easy platform for citizens to report waste problems.
+To allow administrators to manage and monitor waste reports.
+To prioritize waste complaints according to their urgency.
+To assign collection tasks to waste collectors.
+To allow collectors to update the status of assigned tasks.
+To provide transparency through status tracking.
+👥 User Modules
+The system mainly contains three types of users.
+1. Citizen Module
+Citizens can:
+Submit waste complaints/reports.
+Provide information about the waste location.
+Check the status of their complaints.
+Track the progress of waste collection.
+Verify/report the completion of a task where applicable.
+
+2. Admin Module
+The administrator manages the overall system.
+Admin can:
+Monitor reported waste locations.
+Review complaints.
+Assign priority.
+Assign tasks to collectors.
+Monitor collection progress.
+Update/manage report status.
+Monitor the overall waste management workflow.
+3. Waste Collector Module
+Waste collectors are responsible for handling assigned waste collection tasks.
+Collectors can:
+View assigned waste collection tasks.
+Check waste location/details.
+View task priority.
+Update collection status.
+Mark tasks as completed.
+🔄 Complete System Workflow
+The complete working of the system can be represented as:
+Citizen
+   ↓
+Reports Waste
+   ↓
+System Stores Report
+   ↓
+Admin Reviews Report
+   ↓
+Priority is Assigned
+   ↓
+Collector is Assigned
+   ↓
+Collector Views Task
+   ↓
+Waste Collection
+   ↓
+Collector Updates Status
+   ↓
+Admin Monitors Completion
+   ↓
+Citizen Can Track/Verify Status
+
+This workflow helps maintain communication and transparency between all users.
+
+🛠️ Technology Stack
+
+The project uses web technologies and a backend server.
+
+Frontend:
+HTML
+CSS
+JavaScript
+Responsive Web Design
+Backend:
+Node.js
+Express.js
+Database:
+SQLite
+npm
+Deployment
+Render / Cloud deployment environment
+
+⭐ Key Features
+1. Waste Reporting
+Citizens can submit waste-related complaints through the web interface.
+Information may include:
+Waste description
+Location
+Category
+Priority-related information
+Additional details
+2. Priority Management
+Reports can be handled according to their importance or urgency.
+This helps administrators focus on more urgent waste problems.
+
+3. Task Assignment
+
+Administrators can assign reported waste collection tasks to available collectors.
+
+This creates a clear connection between:
+
+Waste Report → Admin → Collector → Collection Task
+
+4. Status Tracking
+
+The system can maintain different stages of a report/task, such as:
+
+Reported
+   ↓
+Under Review
+   ↓
+Assigned
+   ↓
+In Progress
+   ↓
+Collected
+   ↓
+Completed
+
+This allows users to understand the current state of a complaint.
+
+5. Dashboard
+
+The system provides dashboards for different users.
+
+The dashboard can display information such as:
+
+Total reports
+Pending reports
+Assigned tasks
+Completed tasks
+Priority reports
+Collection progress
+🎨 UI/UX Design
+User Interface (UI)
+
+UI represents the visual part of the application.
+
+UX focuses on how easily users can interact with the system.
+
+The application aims to provide:
+
+Simple navigation
+Clear information
+Easy reporting
+Easy task management
+Clear status updates
+Responsive layouts
+User-friendly dashboards
+📱 Responsive Design
+
+The system is designed to work on different screen sizes, including:
+
+Desktop
+Laptop
+Tablet
+Mobile phone
+Responsive design allows the interface to automatically adjust according to the device screen size.
+
+🔐 Security and Data Management
+
+The application uses a backend server and database to manage system information.
+
+Important security considerations include:
+
+User authentication
+Controlled access to modules
+Server-side validation
+Input validation
+Proper database operations
+Separation of user roles
+
+Different users should only access the functions relevant to their role.
+
+🗄️ Database
+
+The project uses SQLite for storing application data.
+
+The database can maintain information related to:
+
+Users
+Waste reports
+Locations
+Priorities
+Assignments
+Collection status
+Completion information
+
+SQLite is suitable for this project prototype because it is lightweight and easy to integrate with a Node.js application.
+
+🔌 API and Backend
+
+The backend is developed using Node.js and Express.js.
+
+The backend is responsible for:
+Receiving requests from the frontend.
+Processing user actions.
+Validating data.
+Communicating with the database.
+Returning required information.
+Managing reports and tasks.
+
+🧠 Smart Features
+Possible future smart features include:
+Waste image classification
+Automatic waste category detection
+AI-based priority prediction
+Route optimization
+Waste collection demand prediction
+Location-based analysis
+Automatic complaint classification
+
+Note: AI/ML-based image classification is considered a future enhancement unless an actual trained model is integrated into the current version.
+
+
+🌐 Deployment
+
+The application can be deployed on a cloud platform such as Render.
+
+General deployment process:
+
+GitHub Repository
+       ↓
+Connect Repository
+       ↓
+Select Node.js Environment
+       ↓
+Install Dependencies
+       ↓
+Start Node.js Server
+       ↓
+Deploy
+       ↓
+Public Web Application
+
+After successful deployment, the application can be accessed through its public URL.
+
+📊 Benefits
+The system can help to:
+Improve waste reporting.
+Reduce manual communication.
+Improve task management.
+Increase transparency.
+Track complaints.
+Improve coordination between users.
+Support organized waste collection.
+Provide a foundation for smart-city waste management.
+
+👩‍💻 Conclusion:
+The Smart Waste Management System provides a digital platform for managing waste-related complaints and collection activities.
+By connecting citizens, administrators, and waste collectors, the system creates a structured workflow from waste reporting to collection and status verification.
+The project demonstrates the practical use of web development, backend APIs, database management, responsive UI/UX, and deployment technologies. It also provides a foundation for future integration of AI, GPS, IoT, analytics, and route optimization.
+
